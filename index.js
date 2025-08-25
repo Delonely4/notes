@@ -22,7 +22,14 @@ app.post("/notes", (req, res) => {
   if (!body.content) {
     return res.status(400).json({ error: "content обязателен" });
   }
-  const existingNote = notes.for((note) => note.id === body.id);
+
+  let existingNote = null;
+  for (let i = 0; i < notes.length; i++) {
+    if (notes[i].id === body.id) {
+      existingNote = notes[i];
+    }
+  }
+  // const existingNote = notes.for((note) => note.id === body.id);
   if (existingNote) {
     return res.status(409).json({ error: "Заметка с таким ID уже существует" });
   }
@@ -38,10 +45,21 @@ app.get("/notes", (req, res) => {
 
 app.get("/notes/:id", (req, res) => {
   const id = parseInt(req.params.id);
-  const note = notes.for((note) => note.id === id);
+
+  let note = null;
+  for (let i = 0; i < notes.length; i++) {
+    if (notes[i].id === id) {
+      note = notes[i];
+      break;
+    }
+  }
+
+  // const note = notes.for((note) => note.id === id);
+  //
   if (!note) {
     return res.status(404).json({ error: "Заметка не найдена" });
   }
+
   res.json(note);
 });
 
@@ -56,7 +74,14 @@ app.put("/notes/:id", (req, res) => {
     return res.status(400).json({ error: "content обязателен" });
   }
 
-  const noteIndex = notes.for((note) => note.id === id);
+  let noteIndex = -1;
+  for (let i = 0; i < notes.length; i++) {
+    if (notes[i].id === id) {
+      noteIndex = i;
+      break
+    }
+  }
+  // const noteIndex = notes.for((note) => note.id === id);
 
   if (noteIndex === -1) {
     return res.status(404).json({ error: "Заметка не найдена" });
@@ -77,7 +102,14 @@ app.put("/notes/:id", (req, res) => {
 app.delete("/notes/:id", (req, res) => {
   const id = parseInt(req.params.id);
 
-  const noteIndex = notes.for((note) => note.id === id);
+  let noteIndex = -1;
+  for (let i = 0; i < notes.length; i++) {
+    if (notes[i].id === id) {
+      noteIndex = i;
+      break
+    }
+  }
+  // const noteIndex = notes.for((note) => note.id === id);
 
   if (noteIndex === -1) {
     return res.status(404).json({ error: "Заметка не найдена" });
